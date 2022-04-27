@@ -2,6 +2,7 @@ package com.jst.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,7 +90,7 @@ public class UsersController {
 		userClone.setFirstName(user.getFirstName());
 		userClone.setLastName(user.getLastName());
 		userClone.setUsername(user.getUsername());
-		userClone.setPassword("***********************");
+		userClone.setPassword(user.getPassword());
 		userClone.setEmail(user.getEmail());
 		userClone.setUserId(user.getUserId());
 		return new ResponseEntity<Users>(userClone, HttpStatus.OK);
@@ -98,7 +100,7 @@ public class UsersController {
 
 	// Update User
 	@PostMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> update(@RequestBody String updateUserJson)
+	public ResponseEntity<Users> update(@RequestBody String updateUserJson)
 			throws JsonParseException, JsonMappingException, IOException {
 		logger.info("### Inside UserController update endpoint");
 		
@@ -106,37 +108,49 @@ public class UsersController {
 		updateUserMap = new ObjectMapper().readValue(updateUserJson, new TypeReference<Map<String, String>>() {
 		});
 		
-		boolean isUpdated = userService.update(updateUserMap);
+		Users updatedUser =  userService.update(updateUserMap);
 		
-		if (!isUpdated)
-			return new ResponseEntity<String>("User Not Updated", HttpStatus.NOT_ACCEPTABLE); 
+		if (updatedUser == null)
+			return new ResponseEntity<Users>(updatedUser, HttpStatus.NOT_ACCEPTABLE); 
 																	
 
-		return new ResponseEntity<String>("User Successfuly Updated", HttpStatus.OK);	 	
+		return new ResponseEntity<Users>(updatedUser, HttpStatus.OK);	 	
 
 	}
 	
-	// Update User
+	// Delete User
 	@PostMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> delete(@RequestBody String deleteUserJson)
+	public ResponseEntity<Map<String, String>> delete(@RequestBody String deleteUserJson)
 			throws JsonParseException, JsonMappingException, IOException {
 		logger.info("### Inside UserController delete endpoint");
 		
 		Map<String, String> updateUserMap = new HashMap<String, String>();
 		updateUserMap = new ObjectMapper().readValue(deleteUserJson, new TypeReference<Map<String, String>>() {
 		});
+		Map<String, String> rspMsg = new HashMap<String, String>();
 		
 		boolean isDeleted = userService.delete(updateUserMap);
-		
-		if (!isDeleted)
-			return new ResponseEntity<String>("User Not Deleted", HttpStatus.NOT_ACCEPTABLE); 
+		if (!isDeleted) {
+			rspMsg.put("message", "User Not Deleted");
+			return new ResponseEntity<Map<String, String>>(rspMsg, HttpStatus.NOT_ACCEPTABLE); 
+		}
 																	
-
-		return new ResponseEntity<String>("User Successfuly Deleted", HttpStatus.OK);	 	
+		rspMsg.put("message", "User Successfully Deleted");
+		return new ResponseEntity<Map<String, String>>(rspMsg, HttpStatus.OK);	 	
 
 	}
 	
+	// Get All Users
+		@GetMapping(value = "/getAll")
+		public ResponseEntity<List<Users>> getAll()
+				throws JsonParseException, JsonMappingException, IOException {
+			logger.info("### Inside UserController delete endpoint");
+			
+			List<Users> allUsers = userService.getAllUsers();
+			return new ResponseEntity <List<Users>> (allUsers, HttpStatus.OK); 
+		
 
+		}
 }
 	
 	

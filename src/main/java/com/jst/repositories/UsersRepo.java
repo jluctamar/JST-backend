@@ -61,29 +61,37 @@ public class UsersRepo {
 	
 	
 	// User update
-	public boolean update(String firstName, String lastName, String username, String password, String email) {
-		logger.info( "###[UserRepo] Inside of update function");
-		
+	public Users update(String firstName, String lastName, String username, String password, String email) {
+
 		Session session = sessionFactory.getCurrentSession();
-		Users user = session.get(Users.class, username);
+
+		String hql = "from Users U WHERE (U.username = :username )";
+		List<Users> userList = session.createQuery(hql).setParameter("username", username).getResultList();
+		Users user = userList.get(0);
+		
+		
 		
 		user.setFirstName(firstName);
 		user.setLastName(lastName);
 		user.setUsername(username);
 		user.setPassword(password);
 		user.setEmail(email);
-		
-		session.save(user);
-		return true;
+		logger.info( "###[UserRepo] Inside of update function " + user);
+		session.save(user); 
+		return user;
 	}
 	
 	
 	// User Delete
 	public boolean delete(String username) {
-		logger.info( "###[UserRepo] Inside of update function");
+		logger.info( "###[UserRepo] Inside of delete function " + username);
 		
+		String hql = "from Users U WHERE (U.username = :username )";
 		Session session = sessionFactory.getCurrentSession();
-		session.delete(username);
+
+		List<Users> userList = session.createQuery(hql).setParameter("username", username).getResultList();
+		Users user = userList.get(0);
+		session.delete(user);
 		return true;
 	}
 	

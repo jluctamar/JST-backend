@@ -52,10 +52,10 @@ public class UserService {
 	 
 	 
 	 // Updating a User 
-	 public boolean update(Map<String, String> userUpdate) {
+	 public Users update(Map<String, String> userUpdate) {
 		 logger.info("[UserService] Update user");
-		 
-		 return userRepo.update(userUpdate.get("firstname"), userUpdate.get("lastname"), userUpdate.get("username"), userUpdate.get("password"), userUpdate.get("email"));
+		 Users updatedUser = userRepo.update(userUpdate.get("firstName"), userUpdate.get("lastName"), userUpdate.get("username"), userUpdate.get("password"), userUpdate.get("email")); 
+		 return updatedUser; 
 	 }
 	 
 	 // Delete a User 
@@ -63,5 +63,11 @@ public class UserService {
 		 logger.info("[UserService] Delete user");
 		 
 		 return userRepo.delete(userDelete.get("username"));
+	 }
+	 
+	 
+	 // Get All Users 
+	 public List<Users> getAllUsers() {
+		 return userRepo.getAll();
 	 }
 }
