@@ -1,5 +1,8 @@
 package com.jst.services;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +52,16 @@ public class UserService {
 	 
 	 
 	 // Updating a User 
+	 public boolean update(Map<String, String> userUpdate) {
+		 logger.info("[UserService] Update user");
+		 
+		 return userRepo.update(userUpdate.get("firstname"), userUpdate.get("lastname"), userUpdate.get("username"), userUpdate.get("password"), userUpdate.get("email"));
+	 }
 	 
+	 // Delete a User 
+	 public boolean delete(Map<String, String> userDelete) {
+		 logger.info("[UserService] Delete user");
+		 
+		 return userRepo.delete(userDelete.get("username"));
+	 }
 }

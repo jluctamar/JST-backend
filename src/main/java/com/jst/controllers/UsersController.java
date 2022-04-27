@@ -97,6 +97,44 @@ public class UsersController {
 
 
 	// Update User
+	@PostMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> update(@RequestBody String updateUserJson)
+			throws JsonParseException, JsonMappingException, IOException {
+		logger.info("### Inside UserController update endpoint");
+		
+		Map<String, String> updateUserMap = new HashMap<String, String>();
+		updateUserMap = new ObjectMapper().readValue(updateUserJson, new TypeReference<Map<String, String>>() {
+		});
+		
+		boolean isUpdated = userService.update(updateUserMap);
+		
+		if (!isUpdated)
+			return new ResponseEntity<String>("User Not Updated", HttpStatus.NOT_ACCEPTABLE); 
+																	
+
+		return new ResponseEntity<String>("User Successfuly Updated", HttpStatus.OK);	 	
+
+	}
+	
+	// Update User
+	@PostMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> delete(@RequestBody String deleteUserJson)
+			throws JsonParseException, JsonMappingException, IOException {
+		logger.info("### Inside UserController delete endpoint");
+		
+		Map<String, String> updateUserMap = new HashMap<String, String>();
+		updateUserMap = new ObjectMapper().readValue(deleteUserJson, new TypeReference<Map<String, String>>() {
+		});
+		
+		boolean isDeleted = userService.delete(updateUserMap);
+		
+		if (!isDeleted)
+			return new ResponseEntity<String>("User Not Deleted", HttpStatus.NOT_ACCEPTABLE); 
+																	
+
+		return new ResponseEntity<String>("User Successfuly Deleted", HttpStatus.OK);	 	
+
+	}
 	
 
 }

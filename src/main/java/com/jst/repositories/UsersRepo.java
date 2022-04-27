@@ -61,6 +61,31 @@ public class UsersRepo {
 	
 	
 	// User update
+	public boolean update(String firstName, String lastName, String username, String password, String email) {
+		logger.info( "###[UserRepo] Inside of update function");
+		
+		Session session = sessionFactory.getCurrentSession();
+		Users user = session.get(Users.class, username);
+		
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setEmail(email);
+		
+		session.save(user);
+		return true;
+	}
+	
+	
+	// User Delete
+	public boolean delete(String username) {
+		logger.info( "###[UserRepo] Inside of update function");
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.delete(username);
+		return true;
+	}
 	
 	
 	
@@ -74,5 +99,12 @@ public class UsersRepo {
 			return true;
 		}
 		return false;
+	}
+	
+	// Get all Users
+	public List<Users> getAll() {
+		logger.info("[UserReposiroty]: getAll method");
+		Session s = sessionFactory.getCurrentSession();
+		return s.createQuery("from Users", Users.class).getResultList();
 	}
 }
